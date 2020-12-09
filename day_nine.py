@@ -57,5 +57,37 @@ def contiguous_sum(filename, sum_value):
         if size > len(numbers):
             break
 
+def contiguous_sum_faster(filename, sum_value):
+    numbers = []
+    cumsums = {}
+    cumsums_list = []
+    total = 0
+    idx = -1
+    with open(filename, 'r') as f: # O(n)
+        while True:
+            line = f.readline()
+            if line.isspace():
+                continue
+            if not line:
+                break
+            number = int(line.strip())
+            total += number
+            idx += 1
+            numbers.append(number) # O(1)
+            cumsums[total] = idx # O(1)
+            cumsums_list.append(total) # O(1)
+
+    for i in range(len(numbers)): # O(n)
+        min_val = cumsums_list[i]
+        if min_val + sum_value in cumsums: # O(1)
+            max_idx = cumsums[min_val + sum_value] # O(1)
+            # add 1 because the current cumsum is not part of the contiguous group
+            return min(numbers[i+1:max_idx+1]) + max(numbers[i+1:max_idx+1]) # O(n) but only happens once
+
+
 print(contiguous_sum('project_files/day9-toy.txt', toy_solution))
 print(contiguous_sum('project_files/day9-puzzle1.txt', solution))
+
+print("Faster:")
+print(contiguous_sum_faster('project_files/day9-toy.txt', toy_solution))
+print(contiguous_sum_faster('project_files/day9-puzzle1.txt', solution))
